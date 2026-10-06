@@ -1,9 +1,10 @@
 /* ==========================================================================
-   BẢNG LƯƠNG OFFLINE - APPLICATION LOGIC & DATA SYSTEM
+   CHẤM CÔNG CỦA MI - APPLICATION LOGIC & DATA SYSTEM
    ========================================================================== */
 
-const KEY = "bang_luong_offline_v2";
-const THEME_KEY = "bang_luong_theme";
+const KEY = "cham_cong_cua_mi_v1";
+const OLD_KEY = "bang_luong_offline_v2";
+const THEME_KEY = "cham_cong_mi_theme";
 
 const defaults = {
   settings: {
@@ -11,11 +12,10 @@ const defaults = {
     standardDays: 26,
     allowance: 1000000,
     cnRate: 10,
-    tvRate: 7,
-    ronRate: 10
+    tvRate: 7
   },
   employees: [
-    { id: crypto.randomUUID(), name: "Hậu", active: true }
+    { id: crypto.randomUUID(), name: "Mi", active: true }
   ],
   attendance: []
 };
@@ -34,8 +34,20 @@ const weekdays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ N
 // --- LocalStorage Data Helpers ---
 function load() {
   try {
-    const x = JSON.parse(localStorage.getItem(KEY));
-    return x || structuredClone(defaults);
+    let raw = localStorage.getItem(KEY);
+    if (!raw) {
+      // Check legacy storage
+      raw = localStorage.getItem(OLD_KEY);
+    }
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.settings) delete parsed.settings.ronRate;
+      if (Array.isArray(parsed.employees)) {
+        parsed.employees.forEach(e => delete e.ronRate);
+      }
+      return parsed;
+    }
+    return structuredClone(defaults);
   } catch (e) {
     return structuredClone(defaults);
   }
@@ -62,7 +74,7 @@ function esc(s) {
 }
 
 function getInitials(name) {
-  if (!name) return "?";
+  if (!name) return "🌸";
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -80,35 +92,27 @@ function getEmpRates(empId) {
   const tvRate = (emp && emp.tvRate !== undefined && emp.tvRate !== null && emp.tvRate !== "") 
     ? +emp.tvRate 
     : (data.settings.tvRate ?? 7);
-  const ronRate = (emp && emp.ronRate !== undefined && emp.ronRate !== null && emp.ronRate !== "") 
-    ? +emp.ronRate 
-    : (data.settings.ronRate ?? 10);
-  return { cnRate, tvRate, ronRate };
+  return { cnRate, tvRate };
 }
 
 // --- Calculation Logic ---
 function calc(a) {
   const cnVal = +a.cn || 0;
   const tvVal = +a.tv || 0;
-  const ronVal = +a.ron || 0;
   const rates = getEmpRates(a.employeeId);
 
   const cnPct = (cnVal * rates.cnRate) / 100;
   const tvPct = (tvVal * rates.tvRate) / 100;
-  const ronPct = (ronVal * rates.ronRate) / 100;
 
   return {
     ...a,
     cn: cnVal,
     tv: tvVal,
-    ron: ronVal,
     cnRate: rates.cnRate,
     tvRate: rates.tvRate,
-    ronRate: rates.ronRate,
     cnPct,
     tvPct,
-    ronPct,
-    totalPct: cnPct + tvPct + ronPct
+    totalPct: cnPct + tvPct
   };
 }
 
@@ -132,10 +136,8 @@ function salary(month, emp = "") {
   const days = r.filter(x => x.work).length;
   const cn = r.reduce((s, x) => s + (+x.cn || 0), 0);
   const tv = r.reduce((s, x) => s + (+x.tv || 0), 0);
-  const ron = r.reduce((s, x) => s + (+x.ron || 0), 0);
   const pCN = r.reduce((s, x) => s + x.cnPct, 0);
   const pTV = r.reduce((s, x) => s + x.tvPct, 0);
-  const pRon = r.reduce((s, x) => s + x.ronPct, 0);
   
   const stdDays = data.settings.standardDays || 26;
   const db = (data.settings.baseSalary || 0) / stdDays;
@@ -143,10 +145,10 @@ function salary(month, emp = "") {
   
   const base = days * db;
   const allowance = days * da;
-  const pct = pCN + pTV + pRon;
+  const pct = pCN + pTV;
   const total = base + allowance + pct;
 
-  return { r, days, cn, tv, ron, pCN, pTV, pRon, pct, base, allowance, total };
+  return { r, days, cn, tv, pCN, pTV, pct, base, allowance, total };
 }
 
 // --- Theme Management ---
@@ -194,17 +196,15 @@ function renderAll() {
   const m = $("#dashboardMonth")?.value || monthNow();
   const s = salary(m);
 
-  if ($("#monthLabel")) $("#monthLabel").textContent = `Tháng ${m.slice(5, 7)} / ${m.slice(0, 4)}`;
+  if ($("#monthLabel")) $("#monthLabel").textContent = `Tháng ${m.slice(5, 7)} / ${m.slice(0, 4)} ✨`;
   if ($("#statDays")) $("#statDays").textContent = s.days;
   if ($("#statCN")) $("#statCN").textContent = money(s.cn);
   if ($("#statTV")) $("#statTV").textContent = money(s.tv);
-  if ($("#statRon")) $("#statRon").textContent = money(s.ron);
   if ($("#statPct")) $("#statPct").textContent = money(s.pct);
   if ($("#statSalary")) $("#statSalary").textContent = money(s.total);
 
   if ($("#cnRateBadge")) $("#cnRateBadge").textContent = (data.settings.cnRate || 10) + "%";
   if ($("#tvRateBadge")) $("#tvRateBadge").textContent = (data.settings.tvRate || 7) + "%";
-  if ($("#ronRateBadge")) $("#ronRateBadge").textContent = (data.settings.ronRate || 10) + "%";
 
   renderEarningsBreakdown(s);
   renderOptions();
@@ -220,19 +220,16 @@ function renderEarningsBreakdown(s) {
   const allowPct = Math.max(0, Math.min(100, (s.allowance / total) * 100));
   const cnPct = Math.max(0, Math.min(100, (s.pCN / total) * 100));
   const tvPct = Math.max(0, Math.min(100, (s.pTV / total) * 100));
-  const ronPct = Math.max(0, Math.min(100, (s.pRon / total) * 100));
 
   if ($("#barBase")) $("#barBase").style.width = basePct + "%";
   if ($("#barAllowance")) $("#barAllowance").style.width = allowPct + "%";
   if ($("#barCN")) $("#barCN").style.width = cnPct + "%";
   if ($("#barTV")) $("#barTV").style.width = tvPct + "%";
-  if ($("#barRon")) $("#barRon").style.width = ronPct + "%";
 
   if ($("#legBase")) $("#legBase").textContent = money(s.base);
   if ($("#legAllowance")) $("#legAllowance").textContent = money(s.allowance);
   if ($("#legCN")) $("#legCN").textContent = money(s.pCN);
   if ($("#legTV")) $("#legTV").textContent = money(s.pTV);
-  if ($("#legRon")) $("#legRon").textContent = money(s.pRon);
 }
 
 function renderOptions() {
@@ -271,9 +268,9 @@ function renderAttendance() {
   if (r.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="12" class="empty-state">
+        <td colspan="10" class="empty-state">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          <div>Chưa có dữ liệu chấm công cho tháng này.</div>
+          <div>Chưa có dữ liệu chấm công cho tháng này 🌸</div>
           <button class="primary" style="margin-top:12px;" onclick="editAttendance()">＋ Thêm lượt chấm công</button>
         </td>
       </tr>`;
@@ -297,10 +294,8 @@ function renderAttendance() {
         </td>
         <td>${money(a.cn)}</td>
         <td>${money(a.tv)}</td>
-        <td>${money(a.ron)}</td>
         <td><span class="badge badge-warning" title="Tỷ lệ % CN: ${a.cnRate}%">+${money(a.cnPct)}</span></td>
         <td><span class="badge badge-success" title="Tỷ lệ % TV: ${a.tvRate}%">+${money(a.tvPct)}</span></td>
-        <td><span class="badge badge-purple" title="Tỷ lệ % Ron: ${a.ronRate}%">+${money(a.ronPct)}</span></td>
         <td><strong style="color:var(--primary);">${money(a.totalPct)}</strong></td>
         <td style="text-align:right;">
           <div class="action-btns" style="justify-content:flex-end;">
@@ -329,14 +324,12 @@ function renderPayroll() {
       ["Phụ cấp ngày công", money(s.allowance)],
       ["Doanh thu VS CN", money(s.cn)],
       ["Doanh thu VS TV", money(s.tv)],
-      ["Doanh thu Ron Keo", money(s.ron)],
       [`Tiền % VS CN`, money(s.pCN)],
       [`Tiền % VS TV`, money(s.pTV)],
-      [`Tiền % Ron Keo`, money(s.pRon)],
       ["Tổng hoa hồng %", money(s.pct)],
       ["TỔNG LƯƠNG NHẬN", money(s.total)]
     ].map((x, i) => `
-      <div class="pay-card ${i === 10 ? "total" : ""}">
+      <div class="pay-card ${i === 8 ? "total" : ""}">
         <span>${x[0]}</span>
         <strong>${x[1]}</strong>
       </div>
@@ -347,7 +340,7 @@ function renderPayroll() {
   if (!tbody) return;
 
   if (s.r.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Chưa có chi tiết ngày công nào trong tháng này.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Chưa có chi tiết ngày công nào trong tháng này ✨</td></tr>`;
     return;
   }
 
@@ -361,7 +354,6 @@ function renderPayroll() {
       </td>
       <td>${money(a.cn)}</td>
       <td>${money(a.tv)}</td>
-      <td>${money(a.ron)}</td>
       <td><strong>${money(a.totalPct)}</strong></td>
     </tr>
   `).join("");
@@ -372,7 +364,7 @@ function renderEmployees() {
   if (!list) return;
 
   if (data.employees.length === 0) {
-    list.innerHTML = `<div class="card empty-state">Chưa có nhân viên nào. Bấm "Thêm nhân viên" để bắt đầu.</div>`;
+    list.innerHTML = `<div class="card empty-state">Chưa có nhân viên nào. Bấm "Thêm nhân viên" để bắt đầu ✨</div>`;
     return;
   }
 
@@ -380,8 +372,7 @@ function renderEmployees() {
     const totalDaysWorked = data.attendance.filter(a => a.employeeId === e.id && a.work).length;
     const rates = getEmpRates(e.id);
     const hasCustom = (e.cnRate !== null && e.cnRate !== undefined && e.cnRate !== "") ||
-                      (e.tvRate !== null && e.tvRate !== undefined && e.tvRate !== "") ||
-                      (e.ronRate !== null && e.ronRate !== undefined && e.ronRate !== "");
+                      (e.tvRate !== null && e.tvRate !== undefined && e.tvRate !== "");
 
     return `
       <div class="employee-card">
@@ -398,10 +389,9 @@ function renderEmployees() {
                 ? `<span class="badge badge-warning">Setup % riêng</span>` 
                 : `<span class="badge badge-muted">% Mặc định</span>`}
             </div>
-            <div style="margin-top:6px;font-size:12px;color:var(--text-muted);display:flex;gap:10px;flex-wrap:wrap;">
-              <span>CN: <strong style="color:var(--text-main);">${rates.cnRate}%</strong></span>
-              <span>TV: <strong style="color:var(--text-main);">${rates.tvRate}%</strong></span>
-              <span>Ron: <strong style="color:var(--text-main);">${rates.ronRate}%</strong></span>
+            <div style="margin-top:6px;font-size:12px;color:var(--text-muted);display:flex;gap:12px;flex-wrap:wrap;">
+              <span>VS CN: <strong style="color:var(--text-main);">${rates.cnRate}%</strong></span>
+              <span>VS TV: <strong style="color:var(--text-main);">${rates.tvRate}%</strong></span>
             </div>
           </div>
         </div>
@@ -425,7 +415,6 @@ function renderSettings() {
   if ($("#allowance")) $("#allowance").value = s.allowance;
   if ($("#cnRate")) $("#cnRate").value = s.cnRate;
   if ($("#tvRate")) $("#tvRate").value = s.tvRate;
-  if ($("#ronRate")) $("#ronRate").value = s.ronRate ?? 10;
 }
 
 // --- Modals & Forms ---
@@ -446,12 +435,11 @@ function attendanceForm(id = "") {
     employeeId: data.employees[0]?.id || "",
     work: true,
     cn: 0,
-    tv: 0,
-    ron: 0
+    tv: 0
   };
 
   openModal(
-    id ? "Sửa lượt chấm công" : "Thêm lượt chấm công",
+    id ? "Sửa lượt chấm công 📝" : "Thêm lượt chấm công 🌸",
     `<form class="modal-form" id="attForm">
       <div class="form-group">
         <label for="fDate">Ngày chấm công</label>
@@ -485,11 +473,6 @@ function attendanceForm(id = "") {
         <input id="fTV" type="number" min="0" step="1000" value="${a.tv || 0}" placeholder="0">
       </div>
 
-      <div class="form-group">
-        <label for="fRon">Doanh thu Ron keo (VNĐ)</label>
-        <input id="fRon" type="number" min="0" step="1000" value="${a.ron || 0}" placeholder="0">
-      </div>
-
       <!-- Real-time Live Calculation Box -->
       <div class="preview-box">
         <div>
@@ -500,19 +483,15 @@ function attendanceForm(id = "") {
           <label id="lblTVP">Tiền % VS TV:</label>
           <strong id="prevTVP">0 ₫</strong>
         </div>
-        <div>
-          <label id="lblRonP">Tiền % Ron keo:</label>
-          <strong id="prevRonP">0 ₫</strong>
-        </div>
         <div style="grid-column: 1 / -1; border-top:1px solid var(--border-color); padding-top:6px;">
           <label>Tổng hoa hồng % trong ngày:</label>
-          <strong id="prevTotalP" style="color:var(--success);font-size:16px;">0 ₫</strong>
+          <strong id="prevTotalP" style="color:var(--primary);font-size:16px;">0 ₫</strong>
         </div>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="secondary" onclick="closeModal()">Hủy</button>
-        <button class="primary" type="submit">Lưu bản ghi</button>
+        <button class="primary" type="submit">Lưu bản ghi ✨</button>
       </div>
     </form>`
   );
@@ -523,26 +502,21 @@ function attendanceForm(id = "") {
 
     if ($("#lblCNP")) $("#lblCNP").textContent = `Tiền % VS CN (${rates.cnRate}%):`;
     if ($("#lblTVP")) $("#lblTVP").textContent = `Tiền % VS TV (${rates.tvRate}%):`;
-    if ($("#lblRonP")) $("#lblRonP").textContent = `Tiền % Ron keo (${rates.ronRate}%):`;
 
     const cnVal = +$("#fCN").value || 0;
     const tvVal = +$("#fTV").value || 0;
-    const ronVal = +$("#fRon").value || 0;
 
     const cnP = (cnVal * rates.cnRate) / 100;
     const tvP = (tvVal * rates.tvRate) / 100;
-    const ronP = (ronVal * rates.ronRate) / 100;
 
     if ($("#prevCNP")) $("#prevCNP").textContent = money(cnP);
     if ($("#prevTVP")) $("#prevTVP").textContent = money(tvP);
-    if ($("#prevRonP")) $("#prevRonP").textContent = money(ronP);
-    if ($("#prevTotalP")) $("#prevTotalP").textContent = money(cnP + tvP + ronP);
+    if ($("#prevTotalP")) $("#prevTotalP").textContent = money(cnP + tvP);
   };
 
   $("#fEmp").onchange = updatePreview;
   $("#fCN").oninput = updatePreview;
   $("#fTV").oninput = updatePreview;
-  $("#fRon").oninput = updatePreview;
   updatePreview();
 
   $("#attForm").onsubmit = e => {
@@ -553,8 +527,7 @@ function attendanceForm(id = "") {
       employeeId: $("#fEmp").value,
       work: $("#fWork").checked,
       cn: +$("#fCN").value || 0,
-      tv: +$("#fTV").value || 0,
-      ron: +$("#fRon").value || 0
+      tv: +$("#fTV").value || 0
     };
 
     if (id) {
@@ -567,7 +540,7 @@ function attendanceForm(id = "") {
     save();
     closeModal();
     renderAll();
-    toast(id ? "Đã cập nhật lượt chấm công" : "Đã thêm lượt chấm công mới");
+    toast(id ? "Đã cập nhật lượt chấm công ✨" : "Đã thêm lượt chấm công mới ✨");
   };
 }
 
@@ -612,14 +585,9 @@ function batchAttendanceForm() {
         <input id="bTV" type="number" min="0" step="1000" value="0" placeholder="0">
       </div>
 
-      <div class="form-group">
-        <label for="bRon">Doanh thu Ron keo mặc định cho mỗi người (VNĐ)</label>
-        <input id="bRon" type="number" min="0" step="1000" value="0" placeholder="0">
-      </div>
-
       <div class="modal-actions">
         <button type="button" class="secondary" onclick="closeModal()">Hủy</button>
-        <button class="primary" type="submit">Xác nhận chấm công</button>
+        <button class="primary" type="submit">Xác nhận chấm công ✨</button>
       </div>
     </form>`
   );
@@ -630,7 +598,6 @@ function batchAttendanceForm() {
     const selectedEmpIds = $$(".batch-emp-cb:checked").map(cb => cb.value);
     const cnVal = +$("#bCN").value || 0;
     const tvVal = +$("#bTV").value || 0;
-    const ronVal = +$("#bRon").value || 0;
 
     if (selectedEmpIds.length === 0) {
       toast("Vui lòng chọn ít nhất 1 nhân viên.");
@@ -646,8 +613,7 @@ function batchAttendanceForm() {
         employeeId: empId,
         work: true,
         cn: cnVal,
-        tv: tvVal,
-        ron: ronVal
+        tv: tvVal
       };
 
       if (existingIdx !== -1) {
@@ -661,7 +627,7 @@ function batchAttendanceForm() {
     save();
     closeModal();
     renderAll();
-    toast(`Đã ghi nhận chấm công cho ${addedCount} nhân viên!`);
+    toast(`Đã ghi nhận chấm công cho ${addedCount} nhân viên! ✨`);
   };
 }
 
@@ -673,7 +639,7 @@ window.toggleWork = (id, val) => {
     a.work = val;
     save();
     renderAll();
-    toast(val ? "Đánh dấu đi làm" : "Đánh dấu nghỉ");
+    toast(val ? "Đánh dấu đi làm 🌸" : "Đánh dấu nghỉ");
   }
 };
 
@@ -689,19 +655,18 @@ window.deleteAttendance = id => {
 // Employee Form Modal
 function employeeForm(id = "") {
   const emp = data.employees.find(x => x.id === id) || { 
-    name: "", active: true, cnRate: null, tvRate: null, ronRate: null 
+    name: "", active: true, cnRate: null, tvRate: null 
   };
 
   const globalCN = data.settings.cnRate || 10;
   const globalTV = data.settings.tvRate || 7;
-  const globalRon = data.settings.ronRate || 10;
 
   openModal(
-    id ? "Sửa thông tin nhân viên" : "Thêm nhân viên mới",
+    id ? "Sửa thông tin nhân viên 👩‍💼" : "Thêm nhân viên mới ✨",
     `<form class="modal-form" id="empForm">
       <div class="form-group">
         <label for="eName">Họ và tên nhân viên</label>
-        <input id="eName" required value="${esc(emp.name)}" placeholder="Ví dụ: Nguyễn Văn A">
+        <input id="eName" required value="${esc(emp.name)}" placeholder="Ví dụ: Nguyễn Thị Mi">
       </div>
 
       <div class="form-group" style="flex-direction:row;align-items:center;gap:10px;">
@@ -725,16 +690,12 @@ function employeeForm(id = "") {
             <label for="eTV">Tỷ lệ % VS Tạp vụ</label>
             <input id="eTV" type="number" min="0" max="100" step="0.1" value="${emp.tvRate != null ? emp.tvRate : ""}" placeholder="Mặc định: ${globalTV}%">
           </div>
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label for="eRon">Tỷ lệ % Ron keo</label>
-            <input id="eRon" type="number" min="0" max="100" step="0.1" value="${emp.ronRate != null ? emp.ronRate : ""}" placeholder="Mặc định: ${globalRon}%">
-          </div>
         </div>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="secondary" onclick="closeModal()">Hủy</button>
-        <button class="primary" type="submit">Lưu thông tin</button>
+        <button class="primary" type="submit">Lưu thông tin ✨</button>
       </div>
     </form>`
   );
@@ -751,8 +712,7 @@ function employeeForm(id = "") {
       name: nameVal,
       active: $("#eActive").checked,
       cnRate: parseRate($("#eCN").value),
-      tvRate: parseRate($("#eTV").value),
-      ronRate: parseRate($("#eRon").value)
+      tvRate: parseRate($("#eTV").value)
     };
 
     if (id) {
@@ -765,7 +725,7 @@ function employeeForm(id = "") {
     save();
     closeModal();
     renderAll();
-    toast(id ? "Đã cập nhật nhân viên" : "Đã thêm nhân viên mới");
+    toast(id ? "Đã cập nhật thông tin nhân viên ✨" : "Đã thêm nhân viên mới thành công ✨");
   };
 }
 
@@ -787,10 +747,10 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `bang-luong-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `cham-cong-cua-mi-backup-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  toast("Đã xuất file sao lưu JSON thành công");
+  toast("Đã xuất file sao lưu JSON thành công ✨");
 }
 
 function importData(file) {
@@ -804,7 +764,7 @@ function importData(file) {
       data = parsed;
       save();
       renderAll();
-      toast("Đã nhập dữ liệu thành công");
+      toast("Đã nhập dữ liệu thành công ✨");
     } catch (err) {
       alert("File sao lưu không hợp lệ. Vui lòng chọn file JSON chuẩn.");
     }
@@ -827,17 +787,15 @@ function exportPayrollCsv() {
   csvContent += `Phụ cấp,${s.allowance}\n`;
   csvContent += `Doanh thu VS CN,${s.cn}\n`;
   csvContent += `Doanh thu VS TV,${s.tv}\n`;
-  csvContent += `Doanh thu Ron keo,${s.ron}\n`;
   csvContent += `Tiền % VS CN,${s.pCN}\n`;
   csvContent += `Tiền % VS TV,${s.pTV}\n`;
-  csvContent += `Tiền % Ron keo,${s.pRon}\n`;
   csvContent += `Tổng tiền %,${s.pct}\n`;
   csvContent += `TỔNG LƯƠNG THỰC LĨNH,${s.total}\n\n`;
 
   csvContent += `CHI TIẾT HẰNG NGÀY\n`;
-  csvContent += `Ngày,Trạng thái,Doanh thu VS CN,Doanh thu VS TV,Doanh thu Ron keo,Tiền % trong ngày\n`;
+  csvContent += `Ngày,Trạng thái,Doanh thu VS CN,Doanh thu VS TV,Tiền % trong ngày\n`;
   s.r.forEach(a => {
-    csvContent += `"${fmt(a.date)}","${a.work ? "Đi làm" : "Nghỉ"}",${a.cn || 0},${a.tv || 0},${a.ron || 0},${a.totalPct}\n`;
+    csvContent += `"${fmt(a.date)}","${a.work ? "Đi làm" : "Nghỉ"}",${a.cn || 0},${a.tv || 0},${a.totalPct}\n`;
   });
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -847,16 +805,16 @@ function exportPayrollCsv() {
   link.download = `Phieu_Luong_${empName.replace(/\s+/g, '_')}_${m}.csv`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  toast("Đã xuất file CSV phiếu lương thành công");
+  toast("Đã xuất file CSV phiếu lương thành công ✨");
 }
 
 function generateSampleData() {
   if (confirm("Tạo dữ liệu mẫu thử nghiệm? Dữ liệu hiện tại sẽ được cập nhật thêm.")) {
     const curMonth = monthNow();
     const emp1Id = data.employees[0]?.id || crypto.randomUUID();
-    let emp2 = data.employees.find(e => e.name === "Minh");
+    let emp2 = data.employees.find(e => e.name === "Lan");
     if (!emp2) {
-      emp2 = { id: crypto.randomUUID(), name: "Minh", active: true };
+      emp2 = { id: crypto.randomUUID(), name: "Lan", active: true };
       data.employees.push(emp2);
     }
 
@@ -872,8 +830,7 @@ function generateSampleData() {
           employeeId: emp1Id,
           work: true,
           cn: i % 2 === 0 ? 1500000 : 0,
-          tv: i % 3 === 0 ? 800000 : 0,
-          ron: i % 4 === 0 ? 500000 : 0
+          tv: i % 3 === 0 ? 800000 : 0
         });
       }
 
@@ -884,15 +841,14 @@ function generateSampleData() {
           employeeId: emp2.id,
           work: true,
           cn: i % 3 === 0 ? 2000000 : 0,
-          tv: i % 2 === 0 ? 1000000 : 0,
-          ron: i % 2 === 0 ? 600000 : 0
+          tv: i % 2 === 0 ? 1000000 : 0
         });
       }
     }
 
     save();
     renderAll();
-    toast("Đã tạo dữ liệu mẫu thành công!");
+    toast("Đã tạo dữ liệu mẫu thành công! ✨");
   }
 }
 
@@ -925,7 +881,7 @@ $("#installBtn")?.addEventListener("click", async () => {
 
 window.addEventListener("appinstalled", () => {
   if ($("#installCard")) $("#installCard").style.display = "none";
-  toast("Ứng dụng đã được cài thành công!");
+  toast("Ứng dụng đã được cài thành công! ✨");
 });
 
 // --- Initialization ---
@@ -973,12 +929,11 @@ document.addEventListener("DOMContentLoaded", () => {
         standardDays: +$("#standardDays").value || 26,
         allowance: +$("#allowance").value || 0,
         cnRate: +$("#cnRate").value || 0,
-        tvRate: +$("#tvRate").value || 0,
-        ronRate: +$("#ronRate").value || 0
+        tvRate: +$("#tvRate").value || 0
       };
       save();
       renderAll();
-      toast("Đã lưu cấu hình mới");
+      toast("Đã lưu cấu hình mới ✨");
     };
   }
 
