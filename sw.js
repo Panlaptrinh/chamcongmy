@@ -1,17 +1,18 @@
-const CACHE = "bang-luong-pwa-v3";
+const CACHE = "cham-cong-mi-v6";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
+  "./styles.css?v=6",
+  "./app.js?v=6",
   "./manifest.webmanifest",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./icons/icon-192.jpg?v=6",
+  "./icons/icon-512.jpg?v=6"
 ];
 
 self.addEventListener("install", e => {
+  self.skipWaiting();
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(ASSETS))
   );
 });
 
@@ -25,13 +26,20 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  // Network-first strategy to ensure mobile devices get fresh UI updates immediately
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      return cached || fetch(e.request).then(r => {
-        const copy = r.clone();
-        caches.open(CACHE).then(c => c.put(e.request,copy));
-        return r;
-      }).catch(() => caches.match("./index.html"));
-    })
+    fetch(e.request)
+      .then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const copy = response.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(e.request).then(cached => {
+          return cached || caches.match("./index.html");
+        });
+      })
   );
 });

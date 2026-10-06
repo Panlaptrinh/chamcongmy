@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ff4d6d">
+  <meta name="theme-color" content="#d9745b">
   <meta name="description" content="Ứng dụng chấm công và tính lương xinh xắn, mượt mà dành cho bạn.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Chấm Công Của Mi">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icons/app-logo.png">
-  <link rel="apple-touch-icon" href="icons/app-logo.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="icons/icon-192.jpg?v=6">
+  <link rel="apple-touch-icon" href="icons/icon-192.jpg?v=6">
+  <link rel="stylesheet" href="styles.css?v=6">
   <title>Chấm Công Của Mi - Sổ Công Xinh Xắn 🌸</title>
 </head>
 <body>
@@ -22,7 +22,7 @@
       <div class="topbar-container">
         <div class="brand-wrapper">
           <div class="brand-icon">
-            <img src="icons/app-logo.png" alt="Chấm Công Của Mi Logo" class="brand-logo-img">
+            <img src="icons/icon-192.jpg?v=6" alt="Chấm Công Của Mi Logo" class="brand-logo-img">
           </div>
           <div class="brand-info">
             <span class="eyebrow">🌸 Sổ công xinh xắn</span>
@@ -357,7 +357,7 @@
               <span class="form-help">Tỷ lệ hưởng trên doanh thu VS CN</span>
             </div>
 
-            <div class="form-group" style="grid-column: 1 / -1;">
+            <div class="form-group">
               <label for="tvRate">Tỷ lệ VS tạp vụ (%)</label>
               <input id="tvRate" type="number" min="0" max="100" step="0.1" placeholder="7">
               <span class="form-help">Tỷ lệ hưởng trên doanh thu VS TV</span>
@@ -439,11 +439,13 @@
     <span id="toastText">Thông báo hệ thống</span>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=6"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
+        navigator.serviceWorker.register("./sw.js").then((reg) => {
+          reg.update();
+        }).catch(() => {});
       });
     }
   </script>

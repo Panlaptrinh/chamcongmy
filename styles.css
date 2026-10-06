@@ -1,122 +1,122 @@
 /* ==========================================================================
-   CHẤM CÔNG CỦA MI - CUTE FEMININE STYLESHEET (DESIGN SYSTEM)
+   CHẤM CÔNG CỦA MI - ELEGANT WARM FEMININE STYLESHEET
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Cute Feminine Color Palette - Light Mode */
-  --bg-main: #fff0f3;
+  /* Warm Aesthetic Color Palette - Light Mode (Warm Soft Terracotta / Rose Gold) */
+  --bg-main: #fbf7f5;
   --bg-card: #ffffff;
-  --bg-card-hover: #fff8f9;
-  --bg-subtle: #ffe5ec;
+  --bg-card-hover: #f9f2ef;
+  --bg-subtle: #f6e8e4;
   --bg-input: #ffffff;
   
-  --border-color: #ffccd5;
-  --border-hover: #ffb3c1;
-  --border-focus: #ff4d6d;
+  --border-color: #eedcd7;
+  --border-hover: #e2c8c1;
+  --border-focus: #d9745b;
   
-  --text-main: #3a1523;
-  --text-muted: #8c5366;
-  --text-light: #b37b8d;
+  --text-main: #2d2422;
+  --text-muted: #786561;
+  --text-light: #a08c87;
   
-  --primary: #ff4d6d;
-  --primary-hover: #e63956;
-  --primary-light: #fff0f3;
-  --primary-glow: rgba(255, 77, 109, 0.25);
+  --primary: #d9745b;
+  --primary-hover: #c5634b;
+  --primary-light: #fbeee9;
+  --primary-glow: rgba(217, 116, 91, 0.18);
   
-  --secondary: #ff758f;
+  --secondary: #e89984;
   
   --success: #2a9d8f;
   --success-bg: #e8f8f5;
   --success-text: #1b685f;
   
-  --warning: #f4a261;
-  --warning-bg: #fff5eb;
-  --warning-text: #b8621d;
+  --warning: #e9c46a;
+  --warning-bg: #fffbf0;
+  --warning-text: #966f1e;
 
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
-  --danger-bg: #fef2f2;
-  --danger-text: #b91c1c;
+  --danger: #e76f51;
+  --danger-hover: #d1583a;
+  --danger-bg: #fdf2ef;
+  --danger-text: #ad3c20;
 
-  --info: #4ea8de;
-  --info-bg: #eef7fc;
-  --info-text: #1a6b9c;
+  --info: #457b9d;
+  --info-bg: #f0f6fa;
+  --info-text: #22516f;
 
   --purple: #b5838d;
   --purple-bg: #f7ede2;
   --purple-text: #6d4c54;
 
-  --topbar-bg: linear-gradient(135deg, #ff4d6d 0%, #ff758f 50%, #ff8fa3 100%);
+  --topbar-bg: linear-gradient(135deg, #2d242c 0%, #3e313c 100%);
   --topbar-text: #ffffff;
   
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(255, 204, 213, 0.6);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(238, 220, 215, 0.7);
   
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
   --radius-full: 9999px;
   
-  --shadow-sm: 0 2px 6px rgba(255, 77, 109, 0.05);
-  --shadow-md: 0 8px 24px -4px rgba(255, 77, 109, 0.12), 0 3px 10px -2px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 16px 36px -6px rgba(255, 77, 109, 0.18), 0 6px 16px -2px rgba(0, 0, 0, 0.05);
-  --shadow-primary: 0 8px 22px -4px rgba(255, 77, 109, 0.38);
+  --shadow-sm: 0 2px 6px rgba(45, 36, 34, 0.04);
+  --shadow-md: 0 8px 20px -4px rgba(217, 116, 91, 0.12), 0 3px 8px -2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 16px 32px -6px rgba(217, 116, 91, 0.16), 0 6px 14px -2px rgba(0, 0, 0, 0.05);
+  --shadow-primary: 0 6px 20px -2px rgba(217, 116, 91, 0.35);
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Cozy Midnight Berry / Dark Rose Theme */
+/* Cozy Velvet Dark Mode Theme */
 [data-theme="dark"] {
-  --bg-main: #19121e;
-  --bg-card: #24192b;
-  --bg-card-hover: #2e2037;
-  --bg-subtle: #33233d;
-  --bg-input: #1f1425;
+  --bg-main: #181417;
+  --bg-card: #231d22;
+  --bg-card-hover: #2d252b;
+  --bg-subtle: #332a31;
+  --bg-input: #1d181c;
   
-  --border-color: #483154;
-  --border-hover: #604170;
-  --border-focus: #ff6584;
+  --border-color: #423640;
+  --border-hover: #594957;
+  --border-focus: #e68a73;
   
-  --text-main: #fde8f0;
-  --text-muted: #c99eb4;
-  --text-light: #946d82;
+  --text-main: #f7ece8;
+  --text-muted: #c7b2bc;
+  --text-light: #94808a;
   
-  --primary: #ff6584;
-  --primary-hover: #ff859e;
-  --primary-light: rgba(255, 101, 132, 0.18);
-  --primary-glow: rgba(255, 101, 132, 0.35);
+  --primary: #e68a73;
+  --primary-hover: #f09e88;
+  --primary-light: rgba(230, 138, 115, 0.18);
+  --primary-glow: rgba(230, 138, 115, 0.35);
   
   --success: #4ecdc4;
   --success-bg: rgba(78, 205, 196, 0.15);
   --success-text: #a4f9f2;
   
-  --warning: #ffb703;
-  --warning-bg: rgba(255, 183, 3, 0.15);
-  --warning-text: #ffea9f;
+  --warning: #f4a261;
+  --warning-bg: rgba(244, 162, 97, 0.15);
+  --warning-text: #fce4c8;
 
-  --danger: #ff6b6b;
-  --danger-hover: #ff5252;
-  --danger-bg: rgba(255, 107, 107, 0.18);
-  --danger-text: #ffc9c9;
+  --danger: #e76f51;
+  --danger-hover: #f08064;
+  --danger-bg: rgba(231, 111, 81, 0.18);
+  --danger-text: #ffd5ca;
 
-  --info: #48cae4;
-  --info-bg: rgba(72, 202, 228, 0.15);
-  --info-text: #ade8f4;
+  --info: #64dfdf;
+  --info-bg: rgba(100, 223, 223, 0.15);
+  --info-text: #c7f9f9;
 
-  --topbar-bg: #150d1a;
+  --topbar-bg: #130f12;
   --topbar-text: #ffffff;
   
-  --glass-bg: rgba(36, 25, 43, 0.9);
+  --glass-bg: rgba(35, 29, 34, 0.92);
   --glass-border: rgba(255, 255, 255, 0.1);
 
   --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.6);
-  --shadow-primary: 0 8px 22px rgba(255, 101, 132, 0.4);
+  --shadow-primary: 0 8px 22px rgba(230, 138, 115, 0.35);
 }
 
 /* ==========================================================================
@@ -992,10 +992,11 @@ tbody td {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-fast);
 }
@@ -1009,27 +1010,33 @@ tbody td {
 .employee-info-box {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  flex: 1;
+  min-width: 0; /* Ensures inner text wraps/truncates cleanly without overlapping action buttons */
 }
 
 .employee-avatar {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: #ffffff;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(255, 77, 109, 0.35);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-primary);
 }
 
 .employee-name {
   font-size: 16px;
   font-weight: 700;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ==========================================================================
@@ -1283,6 +1290,74 @@ tbody td {
   font-size: 15px;
   color: var(--primary);
   margin-top: 2px;
+}
+
+/* ==========================================================================
+   Mobile Responsive Adjustments (< 640px)
+   ========================================================================== */
+
+@media (max-width: 639px) {
+  .topbar {
+    padding: 8px 12px;
+  }
+
+  .brand-wrapper {
+    gap: 8px;
+  }
+
+  .brand-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .brand-info h1 {
+    font-size: 15px;
+  }
+
+  .eyebrow {
+    font-size: 9px;
+    padding: 1px 6px;
+  }
+
+  .page {
+    padding: 14px 10px 90px;
+  }
+
+  .section-head h2 {
+    font-size: 19px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 17px;
+  }
+
+  .stat-card.featured .stat-value {
+    font-size: 20px;
+  }
+
+  .toolbar {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-group {
+    min-width: 100%;
+  }
+
+  .employee-card {
+    padding: 14px;
+  }
 }
 
 /* ==========================================================================
