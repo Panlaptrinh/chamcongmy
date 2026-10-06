@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Ứng dụng chấm công và tính lương offline chuyên nghiệp, tối ưu, bảo mật.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chấm Công & Bảng Lương">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Chấm Công & Bảng Lương Offline</title>
+</head>
+<body>
+  <div id="app">
+    <!-- Topbar Header -->
+    <header class="topbar">
+      <div class="topbar-container">
+        <div class="brand-wrapper">
+          <div class="brand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="brand-info">
+            <span class="eyebrow">Offline PWA</span>
+            <h1>Bảng Lương Pro</h1>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="desktop-nav">
+          <button class="desktop-nav-btn active" data-page="dashboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Tổng quan
+          </button>
+          <button class="desktop-nav-btn" data-page="attendance">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Chấm công
+          </button>
+          <button class="desktop-nav-btn" data-page="payroll">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Bảng lương
+          </button>
+          <button class="desktop-nav-btn" data-page="employees">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Nhân viên
+          </button>
+          <button class="desktop-nav-btn" data-page="settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Cài đặt
+          </button>
+        </nav>
+
+        <div class="topbar-actions">
+          <!-- Theme Toggle -->
+          <button class="icon-btn" id="themeToggleBtn" title="Chuyển chế độ sáng/tối">
+            <svg id="themeIconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="themeIconMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+          
+          <!-- Sao lưu -->
+          <button class="icon-btn" id="backupBtn" title="Xuất sao lưu JSON">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- DASHBOARD PAGE -->
+      <section id="dashboard" class="page active">
+        <div class="section-head">
+          <div>
+            <h2>Tổng quan thu nhập</h2>
+            <p id="monthLabel">Đang tải...</p>
+          </div>
+          <div class="head-actions">
+            <input id="dashboardMonth" type="month">
+          </div>
+        </div>
+
+        <!-- Key Metrics Stats -->
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Ngày công</span>
+              <div class="stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statDays">0</div>
+            <div class="stat-subtext">Tổng ngày làm việc trong tháng</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Doanh thu VS CN</span>
+              <div class="stat-icon" style="background:var(--warning-bg);color:var(--warning);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9v.01"></path><path d="M9 12v.01"></path><path d="M9 15v.01"></path><path d="M9 18v.01"></path></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statCN">0 ₫</div>
+            <div class="stat-subtext">VS Công nghiệp (<span id="cnRateBadge">10%</span>)</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Doanh thu VS TV</span>
+              <div class="stat-icon" style="background:var(--success-bg);color:var(--success);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statTV">0 ₫</div>
+            <div class="stat-subtext">VS Tạp vụ (<span id="tvRateBadge">7%</span>)</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Doanh thu Ron Keo</span>
+              <div class="stat-icon" style="background:var(--purple-bg);color:var(--purple);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statRon">0 ₫</div>
+            <div class="stat-subtext">Vệ sinh Ron keo (<span id="ronRateBadge">10%</span>)</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Tiền hoa hồng %</span>
+              <div class="stat-icon" style="background:var(--info-bg);color:var(--info);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statPct">0 ₫</div>
+            <div class="stat-subtext">Tổng tiền % CN, TV & Ron keo</div>
+          </article>
+
+          <article class="stat-card featured">
+            <div class="stat-header">
+              <span class="stat-label">TỔNG LƯƠNG DỰ TÍNH</span>
+              <div class="stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statSalary">0 ₫</div>
+            <div class="stat-subtext">Bao gồm lương ngày + phụ cấp + tiền %</div>
+          </article>
+        </div>
+
+        <!-- Earnings Breakdown Progress Bar Widget -->
+        <div class="card">
+          <div class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            Cơ cấu thu nhập
+          </div>
+          <div class="earnings-breakdown">
+            <div class="breakdown-bar">
+              <div id="barBase" class="breakdown-segment segment-base" title="Lương ngày" style="width: 40%;"></div>
+              <div id="barAllowance" class="breakdown-segment segment-allowance" title="Phụ cấp" style="width: 15%;"></div>
+              <div id="barCN" class="breakdown-segment segment-cn" title="Tiền % VS CN" style="width: 15%;"></div>
+              <div id="barTV" class="breakdown-segment segment-tv" title="Tiền % VS TV" style="width: 15%;"></div>
+              <div id="barRon" class="breakdown-segment segment-ron" title="Tiền % Ron keo" style="width: 15%;"></div>
+            </div>
+            <div class="breakdown-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--primary);"></span>Lương ngày: <strong id="legBase">0 ₫</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--info);"></span>Phụ cấp: <strong id="legAllowance">0 ₫</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--warning);"></span>Tiền % VS CN: <strong id="legCN">0 ₫</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--success);"></span>Tiền % VS TV: <strong id="legTV">0 ₫</strong></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--purple);"></span>Tiền % Ron keo: <strong id="legRon">0 ₫</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions & Install Banner -->
+        <div class="card">
+          <div class="card-title">Thao tác nhanh</div>
+          <div class="quick-actions-grid">
+            <button class="action-card-btn primary-btn" data-page="attendance" id="dashAddAttendance">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>+ Chấm công</span>
+            </button>
+            <button class="action-card-btn" id="dashBatchAttendance">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span>Chấm nhanh</span>
+            </button>
+            <button class="action-card-btn" data-page="payroll">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span>Bảng lương</span>
+            </button>
+            <button class="action-card-btn" data-page="employees">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              <span>Nhân viên</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PWA Install Banner -->
+        <div class="card install-card" id="installCard" style="display:none;">
+          <div>
+            <div class="card-title" style="margin-bottom:4px;">Cài đặt ứng dụng Bảng Lương</div>
+            <p>Trải nghiệm ứng dụng chạy offline nhanh mượt trên điện thoại & máy tính.</p>
+          </div>
+          <button class="primary" id="installBtn">Cài ngay</button>
+        </div>
+      </section>
+
+      <!-- ATTENDANCE PAGE -->
+      <section id="attendance" class="page">
+        <div class="section-head">
+          <div>
+            <h2>Quản lý Chấm công</h2>
+            <p>1 dòng = 1 ngày làm việc của nhân viên</p>
+          </div>
+          <div class="head-actions">
+            <button class="secondary" id="batchAttendanceBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              Chấm nhanh
+            </button>
+            <button class="primary" id="addAttendance">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Thêm công
+            </button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-group">
+            <input id="attendanceMonth" type="month">
+          </div>
+          <div class="toolbar-group">
+            <select id="attendanceEmployee">
+              <option value="">Tất cả nhân viên</option>
+            </select>
+          </div>
+          <div class="toolbar-group input-with-icon">
+            <div class="input-wrapper">
+              <div class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </div>
+              <input id="attendanceSearch" type="text" placeholder="Tìm theo ngày / thứ...">
+            </div>
+          </div>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Thứ</th>
+                  <th>Nhân viên</th>
+                  <th>Đi làm</th>
+                  <th>Doanh thu VS CN</th>
+                  <th>Doanh thu VS TV</th>
+                  <th>Doanh thu Ron Keo</th>
+                  <th>Tiền % CN</th>
+                  <th>Tiền % TV</th>
+                  <th>Tiền % Ron</th>
+                  <th>Tổng %</th>
+                  <th style="text-align:right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYROLL PAGE -->
+      <section id="payroll" class="page">
+        <div class="section-head">
+          <div>
+            <h2>Bảng Lương Chi Tiết</h2>
+            <p>Tính tự động theo số ngày làm & doanh thu phát sinh</p>
+          </div>
+          <div class="head-actions">
+            <button class="secondary" id="exportCsvBtn" title="Tải file CSV để mở bằng Excel / In ấn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Xuất CSV / In
+            </button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-group">
+            <input id="payrollMonth" type="month">
+          </div>
+          <div class="toolbar-group">
+            <select id="payrollEmployee"></select>
+          </div>
+        </div>
+
+        <div id="payrollSummary" class="payroll-grid"></div>
+
+        <div class="card table-card">
+          <div class="card-header" style="padding: 16px 20px 0;">
+            <div class="card-title">Chi tiết ngày công trong tháng</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Trạng thái</th>
+                  <th>Doanh thu VS CN</th>
+                  <th>Doanh thu VS TV</th>
+                  <th>Doanh thu Ron Keo</th>
+                  <th>Tổng tiền %</th>
+                </tr>
+              </thead>
+              <tbody id="payrollBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- EMPLOYEES PAGE -->
+      <section id="employees" class="page">
+        <div class="section-head">
+          <div>
+            <h2>Danh Sách Nhân Viên</h2>
+            <p>Quản lý nhân viên làm việc trong hệ thống</p>
+          </div>
+          <div class="head-actions">
+            <button class="primary" id="addEmployee">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Thêm nhân viên
+            </button>
+          </div>
+        </div>
+
+        <div id="employeeList" class="employee-grid"></div>
+      </section>
+
+      <!-- SETTINGS PAGE -->
+      <section id="settings" class="page">
+        <div class="section-head">
+          <div>
+            <h2>Cài Đặt Hệ Thống</h2>
+            <p>Cấu hình mức lương, tỷ lệ % và sao lưu dữ liệu</p>
+          </div>
+        </div>
+
+        <form id="settingsForm" class="card form-grid">
+          <div class="card-title">Mức lương & Phụ cấp chuẩn</div>
+          <div class="form-grid form-grid-2col">
+            <div class="form-group">
+              <label for="baseSalary">Lương cơ bản / tháng (VNĐ)</label>
+              <input id="baseSalary" type="number" min="0" step="50000" placeholder="4.500.000">
+              <span class="form-help">Mức lương quy định cho 1 tháng chuẩn</span>
+            </div>
+
+            <div class="form-group">
+              <label for="standardDays">Số ngày công chuẩn (Ngày)</label>
+              <input id="standardDays" type="number" min="1" max="31" placeholder="26">
+              <span class="form-help">Mặc định 26 ngày/tháng</span>
+            </div>
+
+            <div class="form-group">
+              <label for="allowance">Phụ cấp / tháng (VNĐ)</label>
+              <input id="allowance" type="number" min="0" step="50000" placeholder="1.000.000">
+              <span class="form-help">Phụ cấp ăn uống, xăng xe,...</span>
+            </div>
+
+            <div class="form-group">
+              <label for="cnRate">Tỷ lệ VS công nghiệp (%)</label>
+              <input id="cnRate" type="number" min="0" max="100" step="0.1" placeholder="10">
+              <span class="form-help">Tỷ lệ hưởng trên doanh thu VS CN</span>
+            </div>
+
+            <div class="form-group">
+              <label for="tvRate">Tỷ lệ VS tạp vụ (%)</label>
+              <input id="tvRate" type="number" min="0" max="100" step="0.1" placeholder="7">
+              <span class="form-help">Tỷ lệ hưởng trên doanh thu VS TV</span>
+            </div>
+
+            <div class="form-group">
+              <label for="ronRate">Tỷ lệ Ron keo mặc định (%)</label>
+              <input id="ronRate" type="number" min="0" max="100" step="0.1" placeholder="10">
+              <span class="form-help">Tỷ lệ hưởng trên doanh thu Ron keo mặc định</span>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <button class="primary" type="submit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Lưu cấu hình
+            </button>
+          </div>
+        </form>
+
+        <div class="card">
+          <div class="card-title">Sao lưu & Phôi Dữ liệu</div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Dữ liệu hoàn toàn lưu trên bộ nhớ trình duyệt thiết bị. Hãy sao lưu định kỳ để bảo đảm an toàn.</p>
+          <div class="head-actions">
+            <button class="secondary" id="exportBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Xuất JSON
+            </button>
+            <label class="file-btn secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Nhập JSON
+              <input id="importFile" type="file" accept=".json">
+            </label>
+            <button class="outline" id="sampleDataBtn" title="Tạo dữ liệu mẫu thử nghiệm">
+              ✨ Tạo dữ liệu mẫu
+            </button>
+            <button class="danger" id="resetBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Đặt lại dữ liệu
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Mobile Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Tổng quan</span>
+      </button>
+      <button class="nav-btn" data-page="attendance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Chấm công</span>
+      </button>
+      <button class="nav-btn" data-page="payroll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span>Bảng lương</span>
+      </button>
+      <button class="nav-btn" data-page="employees">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <span>Nhân viên</span>
+      </button>
+      <button class="nav-btn" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Cài đặt</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modalTitle">Tiêu đề Modal</h3>
+        <button id="closeModal" class="close-modal-btn" aria-label="Đóng">&times;</button>
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span id="toastText">Thông báo hệ thống</span>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
